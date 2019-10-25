@@ -1,16 +1,19 @@
-import { MQTT_MESSAGE , MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT } from './type'
+import { MQTT_FIXTURE , MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT ,ADD_FIXTURE} from './type'
 import mqtt from 'mqtt'
+import store from '../store'
+
+
 
 export const subscribeMqtt = (clientUrl) => async dispatch => {
+    
     const client  = mqtt.connect(clientUrl)
     client.on('connect', function () {
         client.subscribe('fixture_status', function (err) {
             if(err){
-
             }
             dispatch({
                 type: MQTT_SUBSCRIBED,
-                payload: clientUrl
+                payload: clientUrl,
 
             })
             
@@ -30,7 +33,11 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
         })
     })
     client.on('message', function (topic, message) {
-        const byteArray= []
+
+        console.log(store.getState().fixture.msg)
+        var Mqtt = store.getState().fixture.msg
+      
+       
     // message is Buffer
         var jsonStr = JSON.parse(message.toString());
         const buf=Buffer.from(jsonStr.data);
@@ -38,11 +45,14 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
         var fixtureByte = buf.readUInt8(11)
         var fixtureBattery = buf.readUInt8(12)
         var fixtureBrightness = buf.readUInt8(21)
-
-        if(byteArray.length> 0) {
+        dispatch({
+            type: MQTT_FIXTURE,
+            payload: jsonStr.data
+        })
+        if(Mqtt.length> 0) {
             
             // eslint-disable-next-line array-callback-return
-            var local = byteArray.find(function(element) {
+            var local = Mqtt.find(function(element) {
                 
                 if (element.id === fixtureid  ){
                     console.log(element.id,fixtureid)
@@ -51,6 +61,7 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
                         element.battery = fixtureBattery
                         element.brightness = fixtureBrightness
                         element.byte = fixtureByte
+                        element.lastReceieved = 0
                     
                         // setMessage(byteArray.current)
                     }
@@ -60,17 +71,25 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
                 
             })
             if(!local){
-                byteArray.push({id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery})
+                dispatch({
+                    type: ADD_FIXTURE,
+                    payload: {id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery,lastReceieved: 0}
+                })
               
             }
             
         
         }
         else {
-            console.log("push")
-            byteArray.push({id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery})
+            dispatch({
+                type: ADD_FIXTURE,
+                payload: {id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery,lastReceieved: 0}
+            })
+            
+            // byteArray.push({id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery,lastReceieved: 0})
          
         }
+        
        
     })
 }

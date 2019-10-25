@@ -1,4 +1,4 @@
-import { MQTT_MESSAGE , MQTT_SUBSCRIBED ,MQTT_FAIL ,MQTT_RECONNECT } from '../actions/type'
+import { MQTT_FIXTURE , MQTT_SUBSCRIBED ,MQTT_FAIL ,MQTT_RECONNECT ,ADD_FIXTURE } from '../actions/type'
 
 const initialState = {
     isSubscribed : false,
@@ -16,7 +16,8 @@ export default function( state = initialState,action ) {
                 
                 isSubscribed : true,
                 status:'subscribed',
-                url:payload
+                url:payload,
+                msg: []
             }
         case MQTT_FAIL: 
             return {
@@ -31,9 +32,16 @@ export default function( state = initialState,action ) {
                 url: null,
                 status: 'reconnecting'
             }
-        case MQTT_MESSAGE : 
+        case MQTT_FIXTURE :
             return {
-                msg:payload
+                payload
+            }
+        case ADD_FIXTURE :
+                let newArray = state.msg.slice();
+                newArray.push(payload);
+           
+            return {
+               msg: newArray
             }
         default:
             return state

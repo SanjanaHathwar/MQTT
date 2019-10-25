@@ -9,7 +9,7 @@ import { subscribeMqtt } from './actions/fixtureAction'
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
 
-const Fixture = (props) => {
+const Fixture = ({msg,subscribeMqtt}) => {
     const [open,setOpen] = React.useState(false)
     const [byteStatus,setByteStatus]  = React.useState("")
     const [occupency,setOccupency] = React.useState("")
@@ -17,7 +17,7 @@ const Fixture = (props) => {
     const [fixture_id,setId] = React.useState("")
     
     React.useEffect(() => {
-        props.subscribeMqtt('ws://192.168.33.118:9001')
+        subscribeMqtt('ws://192.168.33.118:9001')
         
 	})
     
@@ -58,18 +58,22 @@ const Fixture = (props) => {
     return (
         <div>
         <Grid container spacing={1}>
-        {
-            props.info.map(fixture => 
-                <Grid item xs key={fixture.id}>
-                    <Card style={{height:30,width:30,margin:10 ,backgroundColor: fixture.luminaries_opmode === "0" ? ("green") :
-                            (fixture.luminaries_opmode === "1" ? "orange" : "red")}} onClick={()=>FixtureDeatils(fixture)}>
+        {/* {
+            (msg.length > 0 ) ? 
+                msg.map(fixture => 
+                    <Grid item xs key={fixture.id}>
+                        <Card style={{height:30,width:30,margin:10 ,backgroundColor: fixture.luminaries_opmode === "0" ? ("green") :
+                                (fixture.luminaries_opmode === "1" ? "orange" : "red")}} onClick={()=>FixtureDeatils(fixture)}>
 
-                    </Card>
-                </Grid>
-            
-            )
+                        </Card>
+                    </Grid>
+                
+                ) 
+            : 
+            null
 
-        }  
+
+        }   */}
         </Grid>
         
             <Dialog
@@ -102,9 +106,11 @@ const Fixture = (props) => {
 Fixture.propTypes = {
     subscribeMqtt: PropTypes.func.isRequired,
     isSubscribed: PropTypes.bool,
+    msg: PropTypes.array
 }
 const mapStateToProps = state => ({
-    isSubscribed: state.fixture.isSubscribed
+    isSubscribed: state.fixture.isSubscribed,
+    msg: state.fixture.msg
 })
 export default connect(null,{subscribeMqtt})(Fixture)
 

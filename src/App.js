@@ -8,12 +8,12 @@ import store from './store';
 
 const App = (props) => {
 	const byteArray = React.useRef([])
-	const [fixtures,setFixtures] = React.useState()
+	// const [fixtures,setFixtures] = React.useState()
 
 
 
 
-	useEffect(() => {
+	// useEffect(() => {
 		
 
 		// client.on('message', function (topic, message) {
@@ -61,7 +61,7 @@ const App = (props) => {
 		// 	console.log(byteArray.current)
 			
 		// })
-	},[byteArray,fixtures])
+	// },[byteArray,fixtures])
 
 
 	return (
