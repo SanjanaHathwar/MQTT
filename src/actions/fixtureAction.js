@@ -1,4 +1,4 @@
-import { MQTT_FIXTURE , MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT ,ADD_FIXTURE} from './type'
+import {   MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT ,ADD_FIXTURE, UPDATE_FIXTURE} from './type'
 import mqtt from 'mqtt'
 import store from '../store'
 
@@ -34,7 +34,7 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
     })
     client.on('message', function (topic, message) {
 
-        console.log(store.getState().fixture.msg)
+    
         var Mqtt = store.getState().fixture.msg
       
        
@@ -45,51 +45,49 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
         var fixtureByte = buf.readUInt8(11)
         var fixtureBattery = buf.readUInt8(12)
         var fixtureBrightness = buf.readUInt8(21)
-        dispatch({
-            type: MQTT_FIXTURE,
-            payload: jsonStr.data
-        })
+        
         if(Mqtt.length> 0) {
             
             // eslint-disable-next-line array-callback-return
             var local = Mqtt.find(function(element) {
                 
-                if (element.id === fixtureid  ){
-                    console.log(element.id,fixtureid)
-                    if(element.battery!== fixtureBattery || element.brightness !== fixtureBrightness || element.byte!== fixtureByte) {
-                        console.log("Found")
-                        element.battery = fixtureBattery
-                        element.brightness = fixtureBrightness
-                        element.byte = fixtureByte
-                        element.lastReceieved = 0
-                    
-                        // setMessage(byteArray.current)
+                if (element.fixtureId === fixtureid  ){
+                    element.last_received = 0
+                   
+                    if(element.battery_level!== fixtureBattery || element.brightness_level !== fixtureBrightness || element.powermode!== fixtureByte) {
+                        
+                        element.battery_level = fixtureBattery
+                        element.brightness_level = fixtureBrightness
+                        element.powermode = fixtureByte
+                        dispatch({
+                            type: UPDATE_FIXTURE,
+                            payload: {fixtureId :fixtureid,last_received: 0}
+                        })
                     }
-                    
                     return true
                 } 
-                
             })
+
             if(!local){
                 dispatch({
                     type: ADD_FIXTURE,
-                    payload: {id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery,lastReceieved: 0}
+                    payload: {fixtureId :fixtureid,powermode :fixtureByte ,brightness_level:fixtureBrightness,battery_level:fixtureBattery,last_received: 0}
                 })
               
             }
-            
-        
         }
         else {
             dispatch({
                 type: ADD_FIXTURE,
-                payload: {id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery,lastReceieved: 0}
+                payload: {fixtureId :fixtureid,powermode :fixtureByte ,brightness_level:fixtureBrightness,battery_level:fixtureBattery,last_received: 0}
             })
             
-            // byteArray.push({id :fixtureid,byte :fixtureByte ,brightness:fixtureBrightness,battery:fixtureBattery,lastReceieved: 0})
+          
          
         }
         
        
     })
 }
+
+

@@ -1,11 +1,11 @@
-import { MQTT_FIXTURE , MQTT_SUBSCRIBED ,MQTT_FAIL ,MQTT_RECONNECT ,ADD_FIXTURE } from '../actions/type'
+import {  MQTT_SUBSCRIBED ,MQTT_FAIL ,MQTT_RECONNECT ,ADD_FIXTURE, ADD_API_FIXTURE, TIMER } from '../actions/type'
 
 const initialState = {
     isSubscribed : false,
     url: null,
     status: null,
-    msg:[]
-   
+    msg:[],
+
 }
 
 export default function( state = initialState,action ) {
@@ -13,36 +13,57 @@ export default function( state = initialState,action ) {
     switch(type) {
         case MQTT_SUBSCRIBED: 
             return {
-                
+                ...state,
                 isSubscribed : true,
                 status:'subscribed',
                 url:payload,
-                msg: []
+                
             }
         case MQTT_FAIL: 
             return {
-               
+                ...state,
                 isSubscribed : false,
                 status:'failed',
-                url:payload
+                url:payload,
             }
         case MQTT_RECONNECT :
             return {
+                ...state,
                 isSubscribed: false,
                 url: null,
                 status: 'reconnecting'
             }
-        case MQTT_FIXTURE :
-            return {
-                payload
-            }
         case ADD_FIXTURE :
-                let newArray = state.msg.slice();
-                newArray.push(payload);
-           
+            
+            let newArray = state.msg.slice()
+            newArray.push(payload);
             return {
-               msg: newArray
+                ...state,
+                status: 'Recieving log',
+                msg: newArray
             }
+        
+        case ADD_API_FIXTURE:
+            let apiArray = state.msg.slice()
+            
+            payload.map(row =>
+                {row.last_received = 0
+                apiArray.push(row)}
+            )
+            return {
+                ...state,
+                msg : apiArray
+            }
+        case TIMER:
+            state.msg.map(row =>
+                row.last_received = row.last_received + 1
+            )
+            
+            return {
+                ...state,
+
+            }
+
         default:
             return state
     }
