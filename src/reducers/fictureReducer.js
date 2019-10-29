@@ -1,4 +1,5 @@
 import {  MQTT_SUBSCRIBED ,MQTT_FAIL ,MQTT_RECONNECT ,ADD_FIXTURE, ADD_API_FIXTURE, TIMER } from '../actions/type'
+import moment from 'moment'
 
 const initialState = {
     isSubscribed : false,
@@ -45,10 +46,13 @@ export default function( state = initialState,action ) {
         
         case ADD_API_FIXTURE:
             let apiArray = state.msg.slice()
-            
+            let Now = moment().toISOString() 
             payload.map(row =>
-                {row.last_received = 0
-                apiArray.push(row)}
+                {
+                    console.log(Now.diff(row.updatedAt))
+                    row.last_received = 0
+                    apiArray.push(row)
+                }
             )
             return {
                 ...state,
@@ -61,7 +65,6 @@ export default function( state = initialState,action ) {
             
             return {
                 ...state,
-
             }
 
         default:

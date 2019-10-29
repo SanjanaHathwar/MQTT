@@ -67,13 +67,11 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
                     return true
                 } 
             })
-
             if(!local){
                 dispatch({
                     type: ADD_FIXTURE,
                     payload: {fixtureId :fixtureid,powermode :fixtureByte ,brightness_level:fixtureBrightness,battery_level:fixtureBattery,last_received: 0}
                 })
-              
             }
         }
         else {
@@ -81,12 +79,7 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
                 type: ADD_FIXTURE,
                 payload: {fixtureId :fixtureid,powermode :fixtureByte ,brightness_level:fixtureBrightness,battery_level:fixtureBattery,last_received: 0}
             })
-            
-          
-         
         }
-        
-       
     })
 }
 

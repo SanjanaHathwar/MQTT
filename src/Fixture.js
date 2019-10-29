@@ -61,8 +61,8 @@ const Fixture = ({subscribeMqtt,fixtureLog,msg,timer}) => {
             setOccupency("Absent")
         }
 
-        if ((fixture.fixtureBattery & 0x80) === 0x80 ) {
-            var level = fixture.fixtureBattery & 0x7f
+        if ((fixture.battery_level & 0x80) === 0x80 ) {
+            var level = fixture.battery_level & 0x7f
             setBatteryLevel(level)
         } 
         
