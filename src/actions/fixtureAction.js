@@ -1,4 +1,4 @@
-import {   MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT ,ADD_FIXTURE, UPDATE_FIXTURE} from './type'
+import {   MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT ,ADD_FIXTURE } from './type'
 import mqtt from 'mqtt'
 import store from '../store'
 
@@ -59,10 +59,7 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
                         element.battery_level = fixtureBattery
                         element.brightness_level = fixtureBrightness
                         element.powermode = fixtureByte
-                        dispatch({
-                            type: UPDATE_FIXTURE,
-                            payload: {fixtureId :fixtureid,last_received: 0}
-                        })
+                      
                     }
                     return true
                 } 

@@ -46,11 +46,15 @@ export default function( state = initialState,action ) {
         
         case ADD_API_FIXTURE:
             let apiArray = state.msg.slice()
-            let Now = moment().toISOString() 
+         
             payload.map(row =>
                 {
-                    console.log(Now.diff(row.updatedAt))
-                    row.last_received = 0
+                    moment().diff(row.updatedAt,'seconds') >= 30 && moment().diff(row.updatedAt,'seconds') < 50 ? 
+                        (row.last_received = 3 )
+                    : 
+                        moment().diff(row.updatedAt,'seconds') <30 ?
+                        row.last_received = 0 : row.last_received = 5
+                        
                     apiArray.push(row)
                 }
             )

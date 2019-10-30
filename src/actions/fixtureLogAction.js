@@ -11,7 +11,7 @@ export const fixtureLog = () => async dispatch => {
         })
 
     } catch (error) {
-      console.log(error)  
+      console.log(error)
     }
 }
 

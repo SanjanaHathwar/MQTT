@@ -78,7 +78,7 @@ const Fixture = ({subscribeMqtt,fixtureLog,msg,timer}) => {
                 (msg.length > 0 ) ? 
                     msg.map(fixture => 
                             <Grid item xs key={fixture.fixtureId}>
-                                <Card key={fixture.id} style={{height:30,width:30,margin:10 ,backgroundColor: fixture.last_received < 3 ? "green" :
+                                <Card key={fixture.id} style={{height:30,width:30,margin: 10 ,backgroundColor: fixture.last_received < 3 ? "green" :
                                     fixture.last_received >= 3 && fixture.last_received < 5 ? "orange" : "red"}} onClick={()=>FixtureDeatils(fixture)}>
 
                                 </Card>
@@ -87,8 +87,6 @@ const Fixture = ({subscribeMqtt,fixtureLog,msg,timer}) => {
                         ) 
                 : 
                     null
-
-
             }  
             </Grid>
         
