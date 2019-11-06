@@ -1,4 +1,4 @@
-import {   MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT ,ADD_FIXTURE } from './type'
+import {   MQTT_SUBSCRIBED ,MQTT_FAIL, MQTT_RECONNECT ,ADD_FIXTURE, UPDATED_FIXTURE } from './type'
 import mqtt from 'mqtt'
 import store from '../store'
 
@@ -51,14 +51,14 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
             // eslint-disable-next-line array-callback-return
             var local = Mqtt.find(function(element) {
                 
-                if (element.fixtureId === fixtureid  ){
+                if (element.fixtureid === fixtureid  ){
                     element.last_received = 0
                    
-                    if(element.battery_level!== fixtureBattery || element.brightness_level !== fixtureBrightness || element.powermode!== fixtureByte) {
+                    if(element.batteryPower!== fixtureBattery || element.Brightnesslevel !== fixtureBrightness || element.powerMode!== fixtureByte) {
                         
-                        element.battery_level = fixtureBattery
-                        element.brightness_level = fixtureBrightness
-                        element.powermode = fixtureByte
+                        element.batteryPower = fixtureBattery
+                        element.Brightnesslevel = fixtureBrightness
+                        element.powerMode = fixtureByte
                       
                     }
                     return true
@@ -67,14 +67,14 @@ export const subscribeMqtt = (clientUrl) => async dispatch => {
             if(!local){
                 dispatch({
                     type: ADD_FIXTURE,
-                    payload: {fixtureId :fixtureid,powermode :fixtureByte ,brightness_level:fixtureBrightness,battery_level:fixtureBattery,last_received: 0}
+                    payload: {fixtureid :fixtureid,powerMode :fixtureByte ,Brightnesslevel:fixtureBrightness,batteryPower:fixtureBattery,last_received: 0}
                 })
             }
         }
         else {
             dispatch({
                 type: ADD_FIXTURE,
-                payload: {fixtureId :fixtureid,powermode :fixtureByte ,brightness_level:fixtureBrightness,battery_level:fixtureBattery,last_received: 0}
+                payload: {fixtureid :fixtureid,powerMode :fixtureByte ,Brightnesslevel:fixtureBrightness,batteryPower:fixtureBattery,last_received: 0}
             })
         }
     })

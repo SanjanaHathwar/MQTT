@@ -1,4 +1,4 @@
-import {  MQTT_SUBSCRIBED ,MQTT_FAIL ,MQTT_RECONNECT ,ADD_FIXTURE, ADD_API_FIXTURE, TIMER } from '../actions/type'
+import {  MQTT_SUBSCRIBED ,MQTT_FAIL ,MQTT_RECONNECT ,ADD_FIXTURE, ADD_API_FIXTURE, TIMER, UPDATED_FIXTURE } from '../actions/type'
 import moment from 'moment'
 
 const initialState = {
@@ -47,9 +47,10 @@ export default function( state = initialState,action ) {
         case ADD_API_FIXTURE:
             let apiArray = state.msg.slice()
          
+            // eslint-disable-next-line array-callback-return
             payload.map(row =>
-                {
-                    moment().diff(row.updatedAt,'seconds') >= 30 && moment().diff(row.updatedAt,'seconds') < 50 ? 
+               
+                {   moment().diff(row.updatedAt,'seconds') >= 30 && moment().diff(row.updatedAt,'seconds') < 50 ? 
                         (row.last_received = 3 )
                     : 
                         moment().diff(row.updatedAt,'seconds') <30 ?
@@ -57,21 +58,29 @@ export default function( state = initialState,action ) {
                         
                     apiArray.push(row)
                 }
+               
+                
             )
             return {
                 ...state,
                 msg : apiArray
             }
         case TIMER:
-            state.msg.map(row =>
+            let x = state.msg.slice()
+
+            x.map(row =>
                 row.last_received = row.last_received + 1
             )
             
             return {
                 ...state,
+                msg: x
             }
+        
 
         default:
             return state
     }
 }
+
+

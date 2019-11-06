@@ -5,17 +5,21 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { subscribeMqtt } from './actions/fixtureAction'
+import { subscribeMqtt  } from './actions/fixtureAction'
 import { fixtureLog , timer } from './actions/fixtureLogAction'
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux'
+import FictureTable from './FictureTable';
+import Chart from './component/Chart';
+import { getBatteryStatus } from './actions/chartAction';
 
-const Fixture = ({subscribeMqtt,fixtureLog,msg,timer}) => {
+const Fixture = ({subscribeMqtt,fixtureLog,msg,timer,getBatteryStatus}) => {
     const [open,setOpen] = useState(false)
     const [byteStatus,setByteStatus]  = useState("")
     const [occupency,setOccupency] = useState("")
     const [batteryLevel,setBatteryLevel] = useState("")
     const [fixtureId,setId] = useState("")
+    // eslint-disable-next-line no-unused-vars
     const [ message , setMessage ] = useState("")
     
     useEffect(() => {
@@ -30,7 +34,8 @@ const Fixture = ({subscribeMqtt,fixtureLog,msg,timer}) => {
             
             setMessage(timer())
         }, 10000);
-    },[timer])
+        getBatteryStatus()
+    },[timer,getBatteryStatus])
 
    
 
@@ -43,7 +48,7 @@ const Fixture = ({subscribeMqtt,fixtureLog,msg,timer}) => {
 
     const FixtureDeatils = (fixture) => {
         setOpen(true)
-        setId(fixture.fixtureId)
+        setId(fixture.fixtureid)
         if ((fixture.powermode & 0xc0) === 0x00 ) {
             setByteStatus("Battery mode")
         } 
@@ -89,6 +94,9 @@ const Fixture = ({subscribeMqtt,fixtureLog,msg,timer}) => {
                     null
             }  
             </Grid>
+
+            <FictureTable/>
+            <Chart/>
         
             <Dialog
                 open={open}
@@ -122,7 +130,9 @@ Fixture.propTypes = {
     timer: PropTypes.func.isRequired,
     subscribeMqtt: PropTypes.func.isRequired,
     isSubscribed: PropTypes.bool,
-    msg: PropTypes.array.isRequired
+    msg: PropTypes.array.isRequired,
+    getBatteryStatus: PropTypes.func.isRequired,
+   
 }
 const mapStateToProps = state => ({
     isSubscribed: state.fixture.isSubscribed,
@@ -130,7 +140,7 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps,{subscribeMqtt,fixtureLog,timer})(Fixture)
+export default connect(mapStateToProps,{subscribeMqtt,fixtureLog,timer,getBatteryStatus})(Fixture)
 
 
 
